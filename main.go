@@ -28,7 +28,7 @@ type Training struct {
 // количество_повторов * длина_шага / м_в_км
 func (t Training) distance() float64 {
 	// вставьте ваш код ниже
-	return float64(t.Action) * t.LenStep / float64(MInKm)
+	return float64(t.Action) * t.LenStep / MInKm
 }
 
 // meanSpeed возвращает среднюю скорость бега или ходьбы.
@@ -112,13 +112,7 @@ func (r Running) Calories() float64 {
 // Это переопределенный метод TrainingInfo() из Training.
 func (r Running) TrainingInfo() InfoMessage {
 	// вставьте ваш код ниже
-	return InfoMessage{
-		TrainingType: r.TrainingType, // тип тренировки
-		Duration:     r.Duration,     // длительность тренировки
-		Distance:     r.distance(),   // расстояние, которое преодолел пользователь
-		Speed:        r.meanSpeed(),  // средняя скорость, с которой двигался пользователь
-		Calories:     r.Calories(),   // количество потраченных калорий
-	}
+	return r.Training.TrainingInfo()
 }
 
 // Константы для расчета потраченных килокалорий при ходьбе.
@@ -142,6 +136,9 @@ type Walking struct {
 // Это переопределенный метод Calories() из Training.
 func (w Walking) Calories() float64 {
 	// вставьте ваш код ниже
+	if w.Duration.Hours() == 0 {
+		return 0
+	}
 	meanSpeed := w.meanSpeed()
 	return ((CaloriesWeightMultiplier * w.Weight) + (math.Pow(meanSpeed*KmHInMsec, 2)/(w.Height/float64(CmInM))*CaloriesSpeedHeightMultiplier*w.Weight)*w.Duration.Hours()*float64(MinInHours))
 }
@@ -150,13 +147,7 @@ func (w Walking) Calories() float64 {
 // Это переопределенный метод TrainingInfo() из Training.
 func (w Walking) TrainingInfo() InfoMessage {
 	// вставьте ваш код ниже
-	return InfoMessage{
-		TrainingType: w.TrainingType, // тип тренировки
-		Duration:     w.Duration,     // длительность тренировки
-		Distance:     w.distance(),   // расстояние, которое преодолел пользователь
-		Speed:        w.meanSpeed(),  // средняя скорость, с которой двигался пользователь
-		Calories:     w.Calories(),   // количество потраченных калорий
-	}
+	return w.Training.TrainingInfo()
 }
 
 // Константы для расчета потраченных килокалорий при плавании.
